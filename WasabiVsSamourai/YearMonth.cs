@@ -9,9 +9,23 @@ namespace WasabiVsSamourai
 		public int Year { get; set; }
 		public int Month { get; set; }
 
-		public bool Equals(YearMonth other)
+		public override string ToString()
 		{
-			return Year == other.Year && Month == other.Month;
+			return $"{Year}.{Month}";
 		}
+
+		#region Equality
+
+		public override bool Equals(object obj) => obj is YearMonth pubKey && this == pubKey;
+
+		public bool Equals(YearMonth other) => this == other;
+
+		public override int GetHashCode() => Year.GetHashCode() ^ Month.GetHashCode();
+
+		public static bool operator ==(YearMonth x, YearMonth y) => x.Year == y.Year && x.Month == y.Month;
+
+		public static bool operator !=(YearMonth x, YearMonth y) => !(x == y);
+
+		#endregion Equality
 	}
 }

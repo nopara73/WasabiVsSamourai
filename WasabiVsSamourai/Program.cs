@@ -16,7 +16,7 @@ namespace WasabiVsSamourai
 		// :) Identify Wasabi coinjoins (2 coord addresses + indistinguishable outputs > 2.)
 		// :) Identify Samourai coinjoins (5 in, 5 out + almost equal amounts.)
 		// :) Count the total number of txs.
-		// Count the total volume.
+		// :) Count the total volume.
 		// Count the mixed volume.
 		// Count the mixed volume weighted with the anonset gained.
 		// Write out monthly comparision.
@@ -68,13 +68,16 @@ namespace WasabiVsSamourai
 				else
 				{
 					stat = new MonthStats();
+					months.Add(monthStamp, stat);
 
 					var prevMonth = monthStamp.Month - 1;
 					if (prevMonth >= 1 && months.TryGetValue(new YearMonth { Year = monthStamp.Year, Month = prevMonth }, out MonthStats prevS))
 					{
-						Console.WriteLine($"{monthStamp.Year}.{prevMonth}");
+						Console.WriteLine($"{monthStamp}");
 						Console.WriteLine($"Wasabi transaction count: {prevS.WasabiCjs.Count}");
 						Console.WriteLine($"Samourai transaction count: {prevS.SamouraiCjs.Count}");
+						Console.WriteLine($"Wasabi total volume: {(int)prevS.WasabiTotalVolume.ToDecimal(MoneyUnit.BTC)} BTC");
+						Console.WriteLine($"Samourai total volume: {(int)prevS.SamouraiTotalVolume.ToDecimal(MoneyUnit.BTC)} BTC");
 					}
 				}
 
