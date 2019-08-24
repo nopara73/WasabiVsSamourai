@@ -10,7 +10,7 @@ namespace WasabiVsSamourai
 	{
 		// TODO:
 		// :) Establish RPC connecton with Bitcoin Core.
-		// Go through all the blocks and txs from June 1.
+		// :) Go through all the blocks and txs from June 1. (Whirlpool launched the end of June?)
 		// Identify Wasabi coinjoins (2 coord addresses + indistinguishable outputs > 2.)
 		// Identify Samourai coinjoins (5 in, 5 out + almost equal amounts.)
 		// Count the total volume.
@@ -30,8 +30,24 @@ namespace WasabiVsSamourai
 			};
 			var client = new RPCClient(rpcConf, Network.Main);
 
-			var blockcount = await client.GetBlockCountAsync();
-			Console.WriteLine(blockcount);
+			var bestHeight = await client.GetBlockCountAsync();
+			// Starts with June 1.
+			var height = 578717;
+			while (true)
+			{
+				var block = await client.GetBlockAsync(height);
+
+				var timeStamp = block.Header.BlockTime;
+				foreach (var tx in block.Transactions)
+				{
+				}
+
+				if (bestHeight <= height)
+				{
+					break;
+				}
+				height++;
+			}
 
 			Console.WriteLine();
 			Console.WriteLine("Press a button to exit...");
