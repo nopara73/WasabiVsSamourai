@@ -14,7 +14,8 @@ namespace WasabiVsSamourai
 		// :) Establish RPC connecton with Bitcoin Core.
 		// :) Go through all the blocks and txs from June 1. (Whirlpool launched the end of June?)
 		// :) Identify Wasabi coinjoins (2 coord addresses + indistinguishable outputs > 2.)
-		// Identify Samourai coinjoins (5 in, 5 out + almost equal amounts.)
+		// :) Identify Samourai coinjoins (5 in, 5 out + almost equal amounts.)
+		// Count the total number of txs.
 		// Count the total volume.
 		// Count the mixed volume.
 		// Count the mixed volume weighted with the anonset gained.
@@ -23,6 +24,7 @@ namespace WasabiVsSamourai
 		private static async Task Main(string[] args)
 		{
 			Console.WriteLine("Hello World! This software compares Wasabi and Samourai coinjoins. Although, I'm not sure it makes much sense, because Wasabi is trustless, and Samourai is untrusted.");
+			Console.WriteLine();
 
 			ParseArgs(args, out NetworkCredential rpcCred);
 
@@ -32,9 +34,24 @@ namespace WasabiVsSamourai
 			};
 			var client = new RPCClient(rpcConf, Network.Main);
 
+			var startTime = DateTimeOffset.UtcNow;
+			await CompareCoinjoinsAsync(client);
+
+			Console.WriteLine();
+			Console.WriteLine($"Analysis ran for {(DateTimeOffset.UtcNow - startTime).TotalMinutes} minutes.");
+			Console.WriteLine("Press a button to exit...");
+			Console.ReadKey();
+		}
+
+		private static async Task CompareCoinjoinsAsync(RPCClient client)
+		{
 			var bestHeight = await client.GetBlockCountAsync();
+
+			int percentageDone = 0;
 			// Starts with June 1.
 			var height = 578717;
+			var totalBlocks = bestHeight - height;
+			Console.WriteLine($"{totalBlocks} will be analyzed.");
 			while (true)
 			{
 				var block = await client.GetBlockAsync(height);
@@ -43,14 +60,26 @@ namespace WasabiVsSamourai
 				foreach (var tx in block.Transactions)
 				{
 					var isWasabiCj = tx.Outputs.Any(x => WasabiCoordScripts.Contains(x.ScriptPubKey)) && tx.GetIndistinguishableOutputs(includeSingle: false).Any(x => x.count > 2);
-
 					if (isWasabiCj)
 					{
-						Console.WriteLine(tx.GetHash());
+						Console.WriteLine($"Wasabi tx found! {tx.GetHash()}");
+					}
+
+					var isSamouraiCj = tx.Inputs.Count == 5 && tx.Outputs.Count == 5 && tx.Outputs.All(x => x.Value.Almost(tx.Outputs.First().Value, Money.Coins(0.002m)));
+					if (isSamouraiCj)
+					{
+						Console.WriteLine($"Samourai tx found! {tx.GetHash()}");
 					}
 				}
 
-				if (bestHeight <= height)
+				int blocksLeft = bestHeight - height;
+				var tempPercentageDone = percentageDone;
+				percentageDone = (totalBlocks - blocksLeft) / (totalBlocks / 100);
+				if (percentageDone != tempPercentageDone)
+				{
+					Console.WriteLine($"Progress: {percentageDone}%");
+				}
+				if (blocksLeft >= 0)
 				{
 					// Refresh bestHeight and if still no new block, then end here.
 					bestHeight = await client.GetBlockCountAsync();
@@ -61,10 +90,6 @@ namespace WasabiVsSamourai
 				}
 				height++;
 			}
-
-			Console.WriteLine();
-			Console.WriteLine("Press a button to exit...");
-			Console.ReadKey();
 		}
 
 		public static IEnumerable<Script> WasabiCoordScripts = new Script[]
