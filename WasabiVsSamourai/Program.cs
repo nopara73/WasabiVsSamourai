@@ -14,7 +14,7 @@ namespace WasabiVsSamourai
 		// :) Establish RPC connecton with Bitcoin Core.
 		// :) Go through all the blocks and txs from June 1. (Whirlpool launched the end of June?)
 		// :) Identify Wasabi coinjoins (2 coord addresses + indistinguishable outputs > 2.)
-		// :) Identify Samourai coinjoins (5 in, 5 out + almost equal amounts.)
+		// :) Identify Samourai coinjoins (5 in, 5 out + equal output amounts.)
 		// :) Count the total number of txs.
 		// :) Count the total volume.
 		// :) Count the mixed volume.
@@ -49,7 +49,7 @@ namespace WasabiVsSamourai
 
 			int percentageDone = 0;
 			// Starts with June 1.
-			var height = 578717;
+			var height = 578718;
 			var totalBlocks = bestHeight - height;
 			Console.WriteLine($"{totalBlocks} blocks will be analyzed.");
 
@@ -86,7 +86,7 @@ namespace WasabiVsSamourai
 						stat.WasabiCjs.Add(tx);
 					}
 
-					var isSamouraiCj = tx.Inputs.Count == 5 && tx.Outputs.Count == 5 && tx.Outputs.All(x => x.Value.Almost(tx.Outputs.First().Value, Money.Coins(0.002m)));
+					var isSamouraiCj = tx.Inputs.Count == 5 && tx.Outputs.Count == 5 && tx.Outputs.All(x => x.Value == tx.Outputs.First().Value);
 					if (isSamouraiCj)
 					{
 						stat.SamouraiCjs.Add(tx);
@@ -122,13 +122,13 @@ namespace WasabiVsSamourai
 
 		private static void Display(MonthStats prevS)
 		{
-			Console.WriteLine($"Wasabi transaction count: {prevS.WasabiCjs.Count}");
-			Console.WriteLine($"Samourai transaction count: {prevS.SamouraiCjs.Count}");
-			Console.WriteLine($"Wasabi total volume: {prevS.WasabiTotalVolume.GetWholeBTC()} BTC");
-			Console.WriteLine($"Samourai total volume: {prevS.SamouraiTotalVolume.GetWholeBTC()} BTC");
-			Console.WriteLine($"Wasabi total mixed volume: {prevS.WasabiTotalMixedVolume.GetWholeBTC()} BTC");
-			Console.WriteLine($"Samourai total mixed volume: {prevS.SamouraiTotalMixedVolume.GetWholeBTC()} BTC");
-			Console.WriteLine($"Wasabi anonset weighted volume mix score: {prevS.WasabiTotalAnonsetWeightedMixedVolume.GetWholeBTC()}");
+			Console.WriteLine($"Wasabi transaction count:                   {prevS.WasabiCjs.Count}");
+			Console.WriteLine($"Samourai transaction count:                 {prevS.SamouraiCjs.Count}");
+			Console.WriteLine($"Wasabi total volume:                        {prevS.WasabiTotalVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Samourai total volume:                      {prevS.SamouraiTotalVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Wasabi total mixed volume:                  {prevS.WasabiTotalMixedVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Samourai total mixed volume:                {prevS.SamouraiTotalMixedVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Wasabi anonset weighted volume mix score:   {prevS.WasabiTotalAnonsetWeightedMixedVolume.GetWholeBTC()}");
 			Console.WriteLine($"Samourai anonset weighted volume mix score: {prevS.SamouraiTotalAnonsetWeightedMixedVolume.GetWholeBTC()}");
 		}
 
