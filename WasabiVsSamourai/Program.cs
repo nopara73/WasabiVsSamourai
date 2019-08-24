@@ -1,6 +1,8 @@
 using NBitcoin;
 using NBitcoin.RPC;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -11,7 +13,7 @@ namespace WasabiVsSamourai
 		// TODO:
 		// :) Establish RPC connecton with Bitcoin Core.
 		// :) Go through all the blocks and txs from June 1. (Whirlpool launched the end of June?)
-		// Identify Wasabi coinjoins (2 coord addresses + indistinguishable outputs > 2.)
+		// :) Identify Wasabi coinjoins (2 coord addresses + indistinguishable outputs > 2.)
 		// Identify Samourai coinjoins (5 in, 5 out + almost equal amounts.)
 		// Count the total volume.
 		// Count the mixed volume.
@@ -40,11 +42,22 @@ namespace WasabiVsSamourai
 				var timeStamp = block.Header.BlockTime;
 				foreach (var tx in block.Transactions)
 				{
+					var isWasabiCj = tx.Outputs.Any(x => WasabiCoordScripts.Contains(x.ScriptPubKey)) && tx.GetIndistinguishableOutputs(includeSingle: false).Any(x => x.count > 2);
+
+					if (isWasabiCj)
+					{
+						Console.WriteLine(tx.GetHash());
+					}
 				}
 
 				if (bestHeight <= height)
 				{
-					break;
+					// Refresh bestHeight and if still no new block, then end here.
+					bestHeight = await client.GetBlockCountAsync();
+					if (bestHeight <= height)
+					{
+						break;
+					}
 				}
 				height++;
 			}
@@ -53,6 +66,12 @@ namespace WasabiVsSamourai
 			Console.WriteLine("Press a button to exit...");
 			Console.ReadKey();
 		}
+
+		public static IEnumerable<Script> WasabiCoordScripts = new Script[]
+		{
+			BitcoinAddress.Create("bc1qs604c7jv6amk4cxqlnvuxv26hv3e48cds4m0ew", Network.Main).ScriptPubKey,
+			BitcoinAddress.Create("bc1qa24tsgchvuxsaccp8vrnkfd85hrcpafg20kmjw", Network.Main).ScriptPubKey
+		};
 
 		private static void ParseArgs(string[] args, out NetworkCredential cred)
 		{
