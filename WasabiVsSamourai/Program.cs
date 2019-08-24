@@ -71,9 +71,10 @@ namespace WasabiVsSamourai
 					months.Add(monthStamp, stat);
 
 					var prevMonth = monthStamp.Month - 1;
-					if (prevMonth >= 1 && months.TryGetValue(new YearMonth { Year = monthStamp.Year, Month = prevMonth }, out MonthStats prevS))
+					YearMonth prevYearMonth = new YearMonth { Year = monthStamp.Year, Month = prevMonth };
+					if (prevMonth >= 1 && months.TryGetValue(prevYearMonth, out MonthStats prevS))
 					{
-						Console.WriteLine(monthStamp);
+						Console.WriteLine(prevYearMonth);
 						Display(prevS);
 					}
 				}
