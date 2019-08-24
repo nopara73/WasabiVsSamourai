@@ -17,8 +17,8 @@ namespace WasabiVsSamourai
 		// :) Identify Samourai coinjoins (5 in, 5 out + almost equal amounts.)
 		// :) Count the total number of txs.
 		// :) Count the total volume.
-		// Count the mixed volume.
-		// Count the mixed volume weighted with the anonset gained.
+		// :) Count the mixed volume.
+		// :) Count the mixed volume weighted with the anonset gained.
 		// Write out monthly comparision.
 		// Publish to GitHub, were the readme is the output.
 		private static async Task Main(string[] args)
