@@ -19,7 +19,7 @@ namespace WasabiVsSamourai
 		// :) Count the total volume.
 		// :) Count the mixed volume.
 		// :) Count the mixed volume weighted with the anonset gained.
-		// Write out monthly comparision.
+		// :) Write out monthly comparision.
 		// Publish to GitHub, were the readme is the output.
 		private static async Task Main(string[] args)
 		{
@@ -73,11 +73,8 @@ namespace WasabiVsSamourai
 					var prevMonth = monthStamp.Month - 1;
 					if (prevMonth >= 1 && months.TryGetValue(new YearMonth { Year = monthStamp.Year, Month = prevMonth }, out MonthStats prevS))
 					{
-						Console.WriteLine($"{monthStamp}");
-						Console.WriteLine($"Wasabi transaction count: {prevS.WasabiCjs.Count}");
-						Console.WriteLine($"Samourai transaction count: {prevS.SamouraiCjs.Count}");
-						Console.WriteLine($"Wasabi total volume: {(int)prevS.WasabiTotalVolume.ToDecimal(MoneyUnit.BTC)} BTC");
-						Console.WriteLine($"Samourai total volume: {(int)prevS.SamouraiTotalVolume.ToDecimal(MoneyUnit.BTC)} BTC");
+						Console.WriteLine(monthStamp);
+						Display(prevS);
 					}
 				}
 
@@ -114,6 +111,25 @@ namespace WasabiVsSamourai
 				}
 				height++;
 			}
+
+			foreach (var month in months)
+			{
+				Console.WriteLine();
+				Console.WriteLine(month);
+				Display(month.Value);
+			}
+		}
+
+		private static void Display(MonthStats prevS)
+		{
+			Console.WriteLine($"Wasabi transaction count: {prevS.WasabiCjs.Count}");
+			Console.WriteLine($"Samourai transaction count: {prevS.SamouraiCjs.Count}");
+			Console.WriteLine($"Wasabi total volume: {prevS.WasabiTotalVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Samourai total volume: {prevS.SamouraiTotalVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Wasabi total mixed volume: {prevS.WasabiTotalMixedVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Samourai total mixed volume: {prevS.SamouraiTotalMixedVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Wasabi anonset weighted volume mix score: {prevS.WasabiTotalAnonsetWeightedMixedVolume.GetWholeBTC()}");
+			Console.WriteLine($"Samourai anonset weighted volume mix score: {prevS.SamouraiTotalAnonsetWeightedMixedVolume.GetWholeBTC()}");
 		}
 
 		public static IEnumerable<Script> WasabiCoordScripts = new Script[]

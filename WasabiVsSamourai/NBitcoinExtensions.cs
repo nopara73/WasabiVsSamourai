@@ -106,6 +106,11 @@ namespace NBitcoin
 			return Money.Satoshis((me.Satoshi / 100m) * perc);
 		}
 
+		public static int GetWholeBTC(this Money me)
+		{
+			return (int)me.ToDecimal(MoneyUnit.BTC);
+		}
+
 		public static decimal ToUsd(this Money me, decimal btcExchangeRate)
 		{
 			return me.ToDecimal(MoneyUnit.BTC) * btcExchangeRate;
