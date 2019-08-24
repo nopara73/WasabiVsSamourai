@@ -15,7 +15,7 @@ namespace WasabiVsSamourai
 		// :) Go through all the blocks and txs from June 1. (Whirlpool launched the end of June?)
 		// :) Identify Wasabi coinjoins (2 coord addresses + indistinguishable outputs > 2.)
 		// :) Identify Samourai coinjoins (5 in, 5 out + almost equal amounts.)
-		// Count the total number of txs.
+		// :) Count the total number of txs.
 		// Count the total volume.
 		// Count the mixed volume.
 		// Count the mixed volume weighted with the anonset gained.
@@ -51,24 +51,45 @@ namespace WasabiVsSamourai
 			// Starts with June 1.
 			var height = 578717;
 			var totalBlocks = bestHeight - height;
-			Console.WriteLine($"{totalBlocks} will be analyzed.");
+			Console.WriteLine($"{totalBlocks} blocks will be analyzed.");
+
+			var months = new Dictionary<YearMonth, MonthStats>();
 			while (true)
 			{
 				var block = await client.GetBlockAsync(height);
 
 				var timeStamp = block.Header.BlockTime;
+				var monthStamp = new YearMonth { Year = timeStamp.Year, Month = timeStamp.Month };
+				MonthStats stat;
+				if (months.TryGetValue(monthStamp, out MonthStats s))
+				{
+					stat = s;
+				}
+				else
+				{
+					stat = new MonthStats();
+
+					var prevMonth = monthStamp.Month - 1;
+					if (prevMonth >= 1 && months.TryGetValue(new YearMonth { Year = monthStamp.Year, Month = prevMonth }, out MonthStats prevS))
+					{
+						Console.WriteLine($"{monthStamp.Year}.{prevMonth}");
+						Console.WriteLine($"Wasabi transaction count: {prevS.WasabiCjs.Count}");
+						Console.WriteLine($"Samourai transaction count: {prevS.SamouraiCjs.Count}");
+					}
+				}
+
 				foreach (var tx in block.Transactions)
 				{
 					var isWasabiCj = tx.Outputs.Any(x => WasabiCoordScripts.Contains(x.ScriptPubKey)) && tx.GetIndistinguishableOutputs(includeSingle: false).Any(x => x.count > 2);
 					if (isWasabiCj)
 					{
-						Console.WriteLine($"Wasabi tx found! {tx.GetHash()}");
+						stat.WasabiCjs.Add(tx);
 					}
 
 					var isSamouraiCj = tx.Inputs.Count == 5 && tx.Outputs.Count == 5 && tx.Outputs.All(x => x.Value.Almost(tx.Outputs.First().Value, Money.Coins(0.002m)));
 					if (isSamouraiCj)
 					{
-						Console.WriteLine($"Samourai tx found! {tx.GetHash()}");
+						stat.SamouraiCjs.Add(tx);
 					}
 				}
 
