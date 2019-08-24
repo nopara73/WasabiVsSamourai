@@ -30,7 +30,10 @@ namespace WasabiVsSamourai
 			var totalMixed = Money.Zero;
 			foreach (var tx in txs)
 			{
-				totalMixed += tx.GetIndistinguishableOutputs(false).Sum(x => x.value);
+				foreach (var group in tx.GetIndistinguishableOutputs(false))
+				{
+					totalMixed += group.count * group.value;
+				}
 			}
 
 			return totalMixed;
@@ -41,7 +44,10 @@ namespace WasabiVsSamourai
 			var totalMixed = Money.Zero;
 			foreach (var tx in txs)
 			{
-				totalMixed += tx.GetIndistinguishableOutputs(false).Sum(x => x.value * x.count);
+				foreach (var group in tx.GetIndistinguishableOutputs(false))
+				{
+					totalMixed += group.count * group.value * group.count;
+				}
 			}
 
 			return totalMixed;
