@@ -20,7 +20,7 @@ namespace WasabiVsSamourai
 		// :) Count the mixed volume.
 		// :) Count the mixed volume weighted with the anonset gained.
 		// :) Write out monthly comparision.
-		// Publish to GitHub, were the readme is the output.
+		// :) Publish to GitHub, were the readme is the output.
 		private static async Task Main(string[] args)
 		{
 			Console.WriteLine("Hello World! This software compares Wasabi and Samourai coinjoins. Although, I'm not sure it makes much sense, because Wasabi is trustless, and Samourai is untrusted.");
@@ -87,7 +87,7 @@ namespace WasabiVsSamourai
 						stat.WasabiCjs.Add(tx);
 					}
 
-					var isSamouraiCj = tx.Inputs.Count == 5 && tx.Outputs.Count == 5 && tx.Outputs.All(x => x.Value == tx.Outputs.First().Value);
+					var isSamouraiCj = tx.Inputs.Count == 5 && tx.Outputs.Count == 5 && tx.Outputs.Select(x => x.Value).Distinct().Count() == 1;
 					if (isSamouraiCj)
 					{
 						stat.SamouraiCjs.Add(tx);
@@ -116,7 +116,7 @@ namespace WasabiVsSamourai
 			foreach (var month in months)
 			{
 				Console.WriteLine();
-				Console.WriteLine(month);
+				Console.WriteLine(month.Key);
 				Display(month.Value);
 			}
 		}
