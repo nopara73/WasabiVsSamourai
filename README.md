@@ -3,7 +3,7 @@
 ## Results
 
 ```
-
+Come back in 30min.
 ```
 
 ## Explanation
