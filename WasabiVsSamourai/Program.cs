@@ -21,6 +21,10 @@ namespace WasabiVsSamourai
             string rpcUser = "";
             string rpcPassword = "";
             ParseArgs(args, ref rpcUser, ref rpcPassword);
+
+            Console.WriteLine();
+            Console.WriteLine("Press a button to exit...");
+            Console.ReadKey();
         }
 
         private static void ParseArgs(string[] args, ref string rpcUser, ref string rpcPassword)
