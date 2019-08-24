@@ -16,7 +16,7 @@ namespace WasabiVsSamourai
         // Publish to GitHub, were the readme is the output.
         private static void Main(string[] args)
         {
-            Console.WriteLine("Hello World! This softeware compares Wasabi and Samourai coinjoins. Although, I'm not sure it makes much sense, because Wasabi is trustless, and Samourai is untrusted.");
+            Console.WriteLine("Hello World! This software compares Wasabi and Samourai coinjoins. Although, I'm not sure it makes much sense, because Wasabi is trustless, and Samourai is untrusted.");
 
             string rpcUser = "";
             string rpcPassword = "";
