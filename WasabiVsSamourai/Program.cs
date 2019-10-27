@@ -60,42 +60,63 @@ namespace WasabiVsSamourai
 			var months = new Dictionary<YearMonth, MonthStats>();
 			while (true)
 			{
-				var block = await client.GetBlockAsync(height);
-
-				var timeStamp = block.Header.BlockTime;
-				var monthStamp = new YearMonth { Year = timeStamp.Year, Month = timeStamp.Month };
-				MonthStats stat;
-				if (months.TryGetValue(monthStamp, out MonthStats s))
+				var rpc = client.PrepareBatch();
+				var parallelBlocks = 15;
+				var maxHeight = Math.Min(height + parallelBlocks, bestHeight);
+				var blockTasks = new List<Task<Block>>();
+				int h;
+				for (h = height; h <= maxHeight; h++)
 				{
-					stat = s;
+					blockTasks.Add(client.GetBlockAsync(h));
 				}
-				else
+				height = h - 1;
+				await rpc.SendBatchAsync();
+
+				foreach (var blockTask in blockTasks)
 				{
-					stat = new MonthStats();
-					months.Add(monthStamp, stat);
+					var block = await blockTask;
 
-					var prevMonth = monthStamp.Month - 1;
-					YearMonth prevYearMonth = new YearMonth { Year = monthStamp.Year, Month = prevMonth };
-					if (prevMonth >= 1 && months.TryGetValue(prevYearMonth, out MonthStats prevS))
+					var timeStamp = block.Header.BlockTime;
+					var monthStamp = new YearMonth { Year = timeStamp.Year, Month = timeStamp.Month };
+					MonthStats stat;
+					if (months.TryGetValue(monthStamp, out MonthStats s))
 					{
-						Console.WriteLine(prevYearMonth);
-						Display(prevS);
+						stat = s;
 					}
-				}
+					else
+					{
+						stat = new MonthStats();
+						months.Add(monthStamp, stat);
 
-				foreach (var tx in block.Transactions)
-				{
-					var isWasabiCj = tx.Outputs.Any(x => WasabiCoordScripts.Contains(x.ScriptPubKey)) && tx.GetIndistinguishableOutputs(includeSingle: false).Any(x => x.count > 2);
-					if (isWasabiCj)
-					{
-						stat.WasabiCjs.Add(tx);
+						var prevMonth = monthStamp.Month - 1;
+						YearMonth prevYearMonth = new YearMonth { Year = monthStamp.Year, Month = prevMonth };
+						if (prevMonth >= 1 && months.TryGetValue(prevYearMonth, out MonthStats prevS))
+						{
+							Console.WriteLine(prevYearMonth);
+							Display(prevS);
+						}
 					}
 
-					var isSamouraiCj = tx.Inputs.Count == 5 && tx.Outputs.Count == 5 && tx.Outputs.Select(x => x.Value).Distinct().Count() == 1 && SamouraiPools.Any(x => x.Almost(tx.Outputs.First().Value, MaxSamouraiPoolFee));
-					if (isSamouraiCj)
+					Parallel.ForEach(block.Transactions, (tx) =>
 					{
-						stat.SamouraiCjs.Add(tx);
-					}
+						Parallel.Invoke(
+							() =>
+							{
+								var isWasabiCj = tx.Outputs.Any(x => WasabiCoordScripts.Contains(x.ScriptPubKey)) && tx.GetIndistinguishableOutputs(includeSingle: false).Any(x => x.count > 2);
+								if (isWasabiCj)
+								{
+									stat.AddWasabiTx(tx);
+								}
+							},
+							() =>
+							{
+								var isSamouraiCj = tx.Inputs.Count == 5 && tx.Outputs.Count == 5 && tx.Outputs.Select(x => x.Value).Distinct().Count() == 1 && SamouraiPools.Any(x => x.Almost(tx.Outputs.First().Value, MaxSamouraiPoolFee));
+								if (isSamouraiCj)
+								{
+									stat.AddSamouraiTx(tx);
+								}
+							});
+					});
 				}
 
 				int blocksLeft = bestHeight - height;
@@ -127,8 +148,8 @@ namespace WasabiVsSamourai
 
 		private static void Display(MonthStats prevS)
 		{
-			Console.WriteLine($"Wasabi transaction count:                   {prevS.WasabiCjs.Count}");
-			Console.WriteLine($"Samourai transaction count:                 {prevS.SamouraiCjs.Count}");
+			Console.WriteLine($"Wasabi transaction count:                   {prevS.WasabiTxCount}");
+			Console.WriteLine($"Samourai transaction count:                 {prevS.SamouraiTxCount}");
 			Console.WriteLine($"Wasabi total volume:                        {prevS.WasabiTotalVolume.GetWholeBTC()} BTC");
 			Console.WriteLine($"Samourai total volume:                      {prevS.SamouraiTotalVolume.GetWholeBTC()} BTC");
 			Console.WriteLine($"Wasabi total mixed volume:                  {prevS.WasabiTotalMixedVolume.GetWholeBTC()} BTC");
