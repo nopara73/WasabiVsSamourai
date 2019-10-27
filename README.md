@@ -15,23 +15,33 @@ Samourai anonset weighted volume mix score: 376
 
 2019.7
 Wasabi transaction count:                   563
-Samourai transaction count:                 1330
+Samourai transaction count:                 1329
 Wasabi total volume:                        13358 BTC
-Samourai total volume:                      259 BTC
+Samourai total volume:                      218 BTC
 Wasabi total mixed volume:                  8402 BTC
-Samourai total mixed volume:                259 BTC
+Samourai total mixed volume:                218 BTC
 Wasabi anonset weighted volume mix score:   308361
-Samourai anonset weighted volume mix score: 1299
+Samourai anonset weighted volume mix score: 1094
 
 2019.8
-Wasabi transaction count:                   444
-Samourai transaction count:                 538
-Wasabi total volume:                        27467 BTC
-Samourai total volume:                      171 BTC
-Wasabi total mixed volume:                  18851 BTC
-Samourai total mixed volume:                171 BTC
-Wasabi anonset weighted volume mix score:   417509
-Samourai anonset weighted volume mix score: 859
+Wasabi transaction count:                   563
+Samourai transaction count:                 731
+Wasabi total volume:                        35362 BTC
+Samourai total volume:                      91 BTC
+Wasabi total mixed volume:                  24366 BTC
+Samourai total mixed volume:                91 BTC
+Wasabi anonset weighted volume mix score:   558039
+Samourai anonset weighted volume mix score: 457
+
+2019.9
+Wasabi transaction count:                   600
+Samourai transaction count:                 854
+Wasabi total volume:                        26200 BTC
+Samourai total volume:                      90 BTC
+Wasabi total mixed volume:                  17485 BTC
+Samourai total mixed volume:                90 BTC
+Wasabi anonset weighted volume mix score:   419303
+Samourai anonset weighted volume mix score: 450
 ```
 
 ## Explanation
