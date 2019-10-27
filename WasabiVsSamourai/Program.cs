@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using WasabiVsSamourai.Helpers;
 
 namespace WasabiVsSamourai
 {
@@ -26,6 +27,8 @@ namespace WasabiVsSamourai
 			Console.WriteLine("Hello World! This software compares Wasabi and Samourai coinjoins. Although, I'm not sure it makes much sense, because Wasabi is trustless, and Samourai is untrusted.");
 			Console.WriteLine();
 
+			Logger.InitializeDefaults();
+
 			ParseArgs(args, out NetworkCredential rpcCred);
 
 			var rpcConf = new RPCCredentialString
@@ -34,11 +37,12 @@ namespace WasabiVsSamourai
 			};
 			var client = new RPCClient(rpcConf, Network.Main);
 
-			var startTime = DateTimeOffset.UtcNow;
-			await CompareCoinjoinsAsync(client);
+			using (BenchmarkLogger.Measure(operationName: "CompareCoinjoinsAsync"))
+			{
+				await CompareCoinjoinsAsync(client);
+			}
 
 			Console.WriteLine();
-			Console.WriteLine($"Analysis ran for {(DateTimeOffset.UtcNow - startTime).TotalMinutes} minutes.");
 			Console.WriteLine("Press a button to exit...");
 			Console.ReadKey();
 		}

@@ -192,6 +192,9 @@ dotnet_naming_style.T_pascal_case_style.required_prefix = T
 dotnet_naming_style.T_pascal_case_style.capitalization = pascal_case
 
 
+# CA1031: Do not catch general exception types
+dotnet_diagnostic.CA1031.severity = silent
+
 [*.xaml]
 indent_style = space
 indent_size = 2

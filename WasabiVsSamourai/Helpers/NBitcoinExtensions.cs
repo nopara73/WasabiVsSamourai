@@ -1,3 +1,4 @@
+using NBitcoin;
 using NBitcoin.Crypto;
 using NBitcoin.DataEncoders;
 using NBitcoin.Protocol;
@@ -10,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static NBitcoin.Crypto.SchnorrBlinding;
 
-namespace NBitcoin
+namespace WasabiVsSamourai.Helpers
 {
 	public static class NBitcoinExtensions
 	{
@@ -21,30 +22,28 @@ namespace NBitcoin
 				node.VersionHandshake(cancellationToken);
 			}
 
-			using (var listener = node.CreateListener())
-			{
-				var getdata = new GetDataPayload(new InventoryVector(node.AddSupportedOptions(InventoryType.MSG_BLOCK), hash));
-				await node.SendMessageAsync(getdata);
-				cancellationToken.ThrowIfCancellationRequested();
+			using var listener = node.CreateListener();
+			var getdata = new GetDataPayload(new InventoryVector(node.AddSupportedOptions(InventoryType.MSG_BLOCK), hash));
+			await node.SendMessageAsync(getdata);
+			cancellationToken.ThrowIfCancellationRequested();
 
-				// Bitcoin Core processes the messages sequentially and does not send a NOTFOUND message if the remote node is pruned and the data not available.
-				// A good way to get any feedback about whether the node knows the block or not is to send a ping request.
-				// If block is not known by the remote node, the pong will be sent immediately, else it will be sent after the block download.
-				ulong pingNonce = RandomUtils.GetUInt64();
-				await node.SendMessageAsync(new PingPayload() { Nonce = pingNonce });
-				while (true)
+			// Bitcoin Core processes the messages sequentially and does not send a NOTFOUND message if the remote node is pruned and the data not available.
+			// A good way to get any feedback about whether the node knows the block or not is to send a ping request.
+			// If block is not known by the remote node, the pong will be sent immediately, else it will be sent after the block download.
+			ulong pingNonce = RandomUtils.GetUInt64();
+			await node.SendMessageAsync(new PingPayload() { Nonce = pingNonce });
+			while (true)
+			{
+				cancellationToken.ThrowIfCancellationRequested();
+				var message = listener.ReceiveMessage(cancellationToken);
+				if (message.Message.Payload is NotFoundPayload ||
+					message.Message.Payload is PongPayload p && p.Nonce == pingNonce)
 				{
-					cancellationToken.ThrowIfCancellationRequested();
-					var message = listener.ReceiveMessage(cancellationToken);
-					if (message.Message.Payload is NotFoundPayload ||
-						(message.Message.Payload is PongPayload p && p.Nonce == pingNonce))
-					{
-						throw new InvalidOperationException($"Disconnected local node, because it does not have the block data.");
-					}
-					else if (message.Message.Payload is BlockPayload b && b.Object?.GetHash() == hash)
-					{
-						return b.Object;
-					}
+					throw new InvalidOperationException($"Disconnected local node, because it does not have the block data.");
+				}
+				else if (message.Message.Payload is BlockPayload b && b.Object?.GetHash() == hash)
+				{
+					return b.Object;
 				}
 			}
 		}
@@ -99,11 +98,11 @@ namespace NBitcoin
 			return anonSet;
 		}
 
-		public static int GetAnonymitySet(this Transaction me, uint outputIndex) => GetAnonymitySet(me, (int)outputIndex);
+		public static int GetAnonymitySet(this Transaction me, uint outputIndex) => me.GetAnonymitySet((int)outputIndex);
 
 		public static Money Percentage(this Money me, decimal perc)
 		{
-			return Money.Satoshis((me.Satoshi / 100m) * perc);
+			return Money.Satoshis(me.Satoshi / 100m * perc);
 		}
 
 		public static int GetWholeBTC(this Money me)
@@ -185,9 +184,9 @@ namespace NBitcoin
 		public static string ToZpub(this ExtPubKey extPubKey, Network network)
 		{
 			var data = extPubKey.ToBytes();
-			var version = (network == Network.Main)
-				? new byte[] { (0x04), (0xB2), (0x47), (0x46) }
-				: new byte[] { (0x04), (0x5F), (0x1C), (0xF6) };
+			var version = network == Network.Main
+				? new byte[] { 0x04, 0xB2, 0x47, 0x46 }
+				: new byte[] { 0x04, 0x5F, 0x1C, 0xF6 };
 
 			return Encoders.Base58Check.EncodeData(version.Concat(data).ToArray());
 		}
@@ -195,9 +194,9 @@ namespace NBitcoin
 		public static string ToZPrv(this ExtKey extKey, Network network)
 		{
 			var data = extKey.ToBytes();
-			var version = (network == Network.Main)
-				? new byte[] { (0x04), (0xB2), (0x43), (0x0C) }
-				: new byte[] { (0x04), (0x5F), (0x18), (0xBC) };
+			var version = network == Network.Main
+				? new byte[] { 0x04, 0xB2, 0x43, 0x0C }
+				: new byte[] { 0x04, 0x5F, 0x18, 0xBC };
 
 			return Encoders.Base58Check.EncodeData(version.Concat(data).ToArray());
 		}
