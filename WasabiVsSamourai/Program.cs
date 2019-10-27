@@ -87,7 +87,7 @@ namespace WasabiVsSamourai
 						stat.WasabiCjs.Add(tx);
 					}
 
-					var isSamouraiCj = tx.Inputs.Count == 5 && tx.Outputs.Count == 5 && tx.Outputs.Select(x => x.Value).Distinct().Count() == 1;
+					var isSamouraiCj = tx.Inputs.Count == 5 && tx.Outputs.Count == 5 && tx.Outputs.Select(x => x.Value).Distinct().Count() == 1 && SamouraiPools.Any(x => x.Almost(tx.Outputs.First().Value, MaxSamouraiPoolFee));
 					if (isSamouraiCj)
 					{
 						stat.SamouraiCjs.Add(tx);
@@ -138,6 +138,14 @@ namespace WasabiVsSamourai
 			BitcoinAddress.Create("bc1qs604c7jv6amk4cxqlnvuxv26hv3e48cds4m0ew", Network.Main).ScriptPubKey,
 			BitcoinAddress.Create("bc1qa24tsgchvuxsaccp8vrnkfd85hrcpafg20kmjw", Network.Main).ScriptPubKey
 		};
+
+		public static IEnumerable<Money> SamouraiPools = new Money[]
+		{
+			Money.Coins(0.01m),
+			Money.Coins(0.05m)
+		};
+
+		public static Money MaxSamouraiPoolFee = Money.Coins(0.0011m);
 
 		private static void ParseArgs(string[] args, out NetworkCredential cred)
 		{
