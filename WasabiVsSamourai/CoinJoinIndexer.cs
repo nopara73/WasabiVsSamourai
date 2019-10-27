@@ -33,11 +33,13 @@ namespace WasabiVsSamourai
 
 		public static Money MaxSamouraiPoolFee = Money.Coins(0.0011m);
 
+		private decimal PercentageDone { get; set; } = 0;
+		private decimal PreviousPercentageDone { get; set; } = -1;
+
 		public async Task<IDictionary<YearMonth, MonthStats>> FindCoinJoinsAsync()
 		{
 			var bestHeight = await RpcClient.GetBlockCountAsync();
 
-			decimal percentageDone = 0;
 			// Starts with June 1.
 			var height = 578718;
 			var totalBlocks = bestHeight - height;
@@ -110,14 +112,15 @@ namespace WasabiVsSamourai
 					});
 				});
 
-				var tempPercentageDone = percentageDone;
 				decimal totalBlocksPer100 = totalBlocks / 100m;
 				int blocksLeft = bestHeight - height;
 				int processedBlocks = totalBlocks - blocksLeft;
-				percentageDone = processedBlocks / totalBlocksPer100;
-				if (Math.Abs(percentageDone - tempPercentageDone) >= 1)
+				PercentageDone = processedBlocks / totalBlocksPer100;
+				bool displayProgress = (PercentageDone - PreviousPercentageDone) >= 1;
+				if (displayProgress)
 				{
-					Console.WriteLine($"Progress: {(int)percentageDone}%");
+					Console.WriteLine($"Progress: {(int)PercentageDone}%");
+					PreviousPercentageDone = PercentageDone;
 				}
 				if (bestHeight <= height)
 				{
