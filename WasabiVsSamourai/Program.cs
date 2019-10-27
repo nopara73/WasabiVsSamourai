@@ -122,14 +122,13 @@ namespace WasabiVsSamourai
 					});
 				});
 
-				int blocksLeft = bestHeight - height;
 				var tempPercentageDone = percentageDone;
-				percentageDone = (totalBlocks - blocksLeft) / (totalBlocks / 100);
+				percentageDone = (totalBlocks - (bestHeight - height)) / (totalBlocks / 100);
 				if (percentageDone != tempPercentageDone)
 				{
 					Console.WriteLine($"Progress: {percentageDone}%");
 				}
-				if (blocksLeft >= 0)
+				if (bestHeight <= height)
 				{
 					// Refresh bestHeight and if still no new block, then end here.
 					bestHeight = await client.GetBlockCountAsync();
