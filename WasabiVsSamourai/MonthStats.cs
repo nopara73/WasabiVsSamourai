@@ -82,5 +82,17 @@ namespace WasabiVsSamourai
 				return totalMixed;
 			}
 		}
+
+		public void Display()
+		{
+			Console.WriteLine($"Wasabi transaction count:                   {WasabiTxCount}");
+			Console.WriteLine($"Samourai transaction count:                 {SamouraiTxCount}");
+			Console.WriteLine($"Wasabi total volume:                        {WasabiTotalVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Samourai total volume:                      {SamouraiTotalVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Wasabi total mixed volume:                  {WasabiTotalMixedVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Samourai total mixed volume:                {SamouraiTotalMixedVolume.GetWholeBTC()} BTC");
+			Console.WriteLine($"Wasabi anonset weighted volume mix score:   {WasabiTotalAnonsetWeightedMixedVolume.GetWholeBTC()}");
+			Console.WriteLine($"Samourai anonset weighted volume mix score: {SamouraiTotalAnonsetWeightedMixedVolume.GetWholeBTC()}");
+		}
 	}
 }
