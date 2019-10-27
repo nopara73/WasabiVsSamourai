@@ -1,6 +1,7 @@
 using NBitcoin;
 using NBitcoin.RPC;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -57,22 +58,24 @@ namespace WasabiVsSamourai
 			var totalBlocks = bestHeight - height;
 			Console.WriteLine($"{totalBlocks} blocks will be analyzed.");
 
-			var months = new Dictionary<YearMonth, MonthStats>();
+			var months = new ConcurrentDictionary<YearMonth, MonthStats>();
 			while (true)
 			{
-				var rpc = client.PrepareBatch();
-				var parallelBlocks = 15;
-				var maxHeight = Math.Min(height + parallelBlocks, bestHeight);
 				var blockTasks = new List<Task<Block>>();
+
+				client = client.PrepareBatch();
+				// Default rpcworkqueue is 16 and GetBlockAsync is working with 2 requests.
+				var parallelBlocks = 8;
+				var maxHeight = Math.Min(height + parallelBlocks, bestHeight);
 				int h;
-				for (h = height; h <= maxHeight; h++)
+				for (h = height; h < maxHeight; h++)
 				{
 					blockTasks.Add(client.GetBlockAsync(h));
 				}
 				height = h - 1;
-				await rpc.SendBatchAsync();
+				await client.SendBatchAsync();
 
-				foreach (var blockTask in blockTasks)
+				Parallel.ForEach(blockTasks, async (blockTask) =>
 				{
 					var block = await blockTask;
 
@@ -86,7 +89,7 @@ namespace WasabiVsSamourai
 					else
 					{
 						stat = new MonthStats();
-						months.Add(monthStamp, stat);
+						months.TryAdd(monthStamp, stat);
 
 						var prevMonth = monthStamp.Month - 1;
 						YearMonth prevYearMonth = new YearMonth { Year = monthStamp.Year, Month = prevMonth };
@@ -117,7 +120,7 @@ namespace WasabiVsSamourai
 								}
 							});
 					});
-				}
+				});
 
 				int blocksLeft = bestHeight - height;
 				var tempPercentageDone = percentageDone;
