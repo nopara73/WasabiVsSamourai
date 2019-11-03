@@ -1,6 +1,6 @@
 # Wasabi vs Samourai coinjoin statistics
 
-`dotnet run -c Release --no-build --rpcuser=user --rpcpassword=password`
+`dotnet run -- --rpcuser=user --rpcpassword=password`
 
 ## Results
 
