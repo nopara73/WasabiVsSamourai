@@ -1,5 +1,7 @@
 # Wasabi vs Samourai coinjoin statistics
 
+`dotnet run -c Release --no-build --rpcuser=user --rpcpassword=password`
+
 ## Results
 
 ```
@@ -12,6 +14,7 @@ Wasabi total mixed volume:                  10569 BTC
 Samourai total mixed volume:                75 BTC
 Wasabi anonset weighted volume mix score:   346819
 Samourai anonset weighted volume mix score: 376
+Progress: 99%
 
 2019.7
 Wasabi transaction count:                   563
@@ -25,23 +28,33 @@ Samourai anonset weighted volume mix score: 1094
 
 2019.8
 Wasabi transaction count:                   563
-Samourai transaction count:                 731
+Samourai transaction count:                 761
 Wasabi total volume:                        35362 BTC
-Samourai total volume:                      91 BTC
+Samourai total volume:                      166 BTC
 Wasabi total mixed volume:                  24366 BTC
-Samourai total mixed volume:                91 BTC
+Samourai total mixed volume:                166 BTC
 Wasabi anonset weighted volume mix score:   558039
-Samourai anonset weighted volume mix score: 457
+Samourai anonset weighted volume mix score: 832
 
 2019.9
 Wasabi transaction count:                   600
-Samourai transaction count:                 854
+Samourai transaction count:                 898
 Wasabi total volume:                        26200 BTC
-Samourai total volume:                      90 BTC
+Samourai total volume:                      200 BTC
 Wasabi total mixed volume:                  17485 BTC
-Samourai total mixed volume:                90 BTC
+Samourai total mixed volume:                200 BTC
 Wasabi anonset weighted volume mix score:   419303
-Samourai anonset weighted volume mix score: 450
+Samourai anonset weighted volume mix score: 1000
+
+2019.10
+Wasabi transaction count:                   583
+Samourai transaction count:                 1542
+Wasabi total volume:                        16572 BTC
+Samourai total volume:                      301 BTC
+Wasabi total mixed volume:                  10779 BTC
+Samourai total mixed volume:                301 BTC
+Wasabi anonset weighted volume mix score:   418963
+Samourai anonset weighted volume mix score: 1506
 ```
 
 ## Explanation

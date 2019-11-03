@@ -28,7 +28,8 @@ namespace WasabiVsSamourai
 		public static IEnumerable<Money> SamouraiPools = new Money[]
 		{
 			Money.Coins(0.01m),
-			Money.Coins(0.05m)
+			Money.Coins(0.05m),
+			Money.Coins(0.5m)
 		};
 
 		public static Money MaxSamouraiPoolFee = Money.Coins(0.0011m);
