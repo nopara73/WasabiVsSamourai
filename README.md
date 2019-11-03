@@ -14,7 +14,6 @@ Wasabi total mixed volume:                  10569 BTC
 Samourai total mixed volume:                75 BTC
 Wasabi anonset weighted volume mix score:   346819
 Samourai anonset weighted volume mix score: 376
-Progress: 99%
 
 2019.7
 Wasabi transaction count:                   563
