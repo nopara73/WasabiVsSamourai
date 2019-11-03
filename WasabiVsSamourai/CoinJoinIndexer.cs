@@ -37,7 +37,7 @@ namespace WasabiVsSamourai
 		private decimal PercentageDone { get; set; } = 0;
 		private decimal PreviousPercentageDone { get; set; } = -1;
 
-		public async Task<IDictionary<YearMonth, MonthStats>> FindCoinJoinsAsync()
+		public async Task<IOrderedEnumerable<KeyValuePair<YearMonth, MonthStats>>> FindCoinJoinsAsync()
 		{
 			var bestHeight = await RpcClient.GetBlockCountAsync();
 
@@ -135,7 +135,10 @@ namespace WasabiVsSamourai
 				height++;
 			}
 
-			return months;
+			IOrderedEnumerable<KeyValuePair<YearMonth, MonthStats>> ordered = months
+				.OrderBy(x => x.Key.Year)
+				.ThenBy(x => x.Key.Month);
+			return ordered;
 		}
 	}
 }
