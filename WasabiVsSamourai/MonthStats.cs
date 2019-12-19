@@ -83,6 +83,22 @@ namespace WasabiVsSamourai
 			}
 		}
 
+		public IEnumerable<Transaction> GetAllSamouraiCjs()
+		{
+			lock (Lock)
+			{
+				return SamouraiCjs.ToArray();
+			}
+		}
+
+		public IEnumerable<Transaction> GetAllWasabiCjs()
+		{
+			lock (Lock)
+			{
+				return WasabiCjs.ToArray();
+			}
+		}
+
 		public void Display()
 		{
 			Console.WriteLine($"Wasabi transaction count:                   {WasabiTxCount}");

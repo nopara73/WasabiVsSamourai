@@ -3,6 +3,7 @@ using NBitcoin.RPC;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -38,6 +39,9 @@ namespace WasabiVsSamourai
 					Console.WriteLine(month.Key);
 					month.Value.Display();
 				}
+
+				await File.WriteAllLinesAsync("WasabiCoinJoins.txt", months.SelectMany(x => x.Value.GetAllWasabiCjs().Select(x => x.GetHash().ToString())));
+				await File.WriteAllLinesAsync("SamouraiCoinJoins.txt", months.SelectMany(x => x.Value.GetAllSamouraiCjs().Select(x => x.GetHash().ToString())));
 			}
 
 			Console.WriteLine();

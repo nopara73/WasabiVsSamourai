@@ -4,6 +4,13 @@
 
 ## Results
 
+### All Transactions
+
+All Wasabi coinjoins: https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/WasabiCoinJoins.txt
+All Samourai coinjoins: https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/SamouraiCoinJoins.txt
+
+### Statistics
+
 ```
 2019.6
 Wasabi transaction count:                   528
@@ -54,6 +61,16 @@ Wasabi total mixed volume:                  10779 BTC
 Samourai total mixed volume:                301 BTC
 Wasabi anonset weighted volume mix score:   418963
 Samourai anonset weighted volume mix score: 1506
+
+2019.11
+Wasabi transaction count:                   545
+Samourai transaction count:                 999
+Wasabi total volume:                        15066 BTC
+Samourai total volume:                      238 BTC
+Wasabi total mixed volume:                  9304 BTC
+Samourai total mixed volume:                238 BTC
+Wasabi anonset weighted volume mix score:   360360
+Samourai anonset weighted volume mix score: 1190
 ```
 
 ## Explanation
