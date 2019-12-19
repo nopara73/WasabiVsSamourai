@@ -8,8 +8,8 @@
 
 ### All Transactions
 
-All Wasabi coinjoins: https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/WasabiCoinJoins.txt
-All Samourai coinjoins: https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/SamouraiCoinJoins.txt
+- [All Wasabi coinjoins](https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/WasabiCoinJoins.txt)
+- [All Samourai coinjoins](https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/SamouraiCoinJoins.txt)
 
 ### Statistics
 
