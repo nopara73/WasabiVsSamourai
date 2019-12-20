@@ -3,9 +3,11 @@
 `dotnet run -- --rpcuser=user --rpcpassword=password`
 
 
-## I. List of all CoinJoins
+## I. List of all CoinJoins from 2019.6
 
-- [All Wasabi coinjoins](https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/WasabiCoinJoins.txt)
+Note that, 2019.6 is when Samourai Whirlpool became operational, thus the software parses the blockchain only from that time, thus Wasabi CJ list isn't exhaustive.
+
+- [Wasabi coinjoins](https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/WasabiCoinJoins.txt)
 - [All Samourai coinjoins](https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/SamouraiCoinJoins.txt)
 
 ## II. Statistics
