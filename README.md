@@ -78,6 +78,8 @@ Samourai anonset weighted volume mix score: 1190
 
 The numbers are accurate. The two wallet's coinjoins can be identified with close to 100% accuracy.
 
+**Update.** As an attempt of trying to disprove myself, [I ran the algorithm for ~2018](https://github.com/nopara73/WasabiVsSamourai/blob/master/2018Stats.md) (from block 500000 to block 552560) and I found zero false positive results.
+
 ###  transaction count
 
 The number of coinjoin transactions those were done.
