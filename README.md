@@ -3,9 +3,11 @@
 `dotnet run -- --rpcuser=user --rpcpassword=password`
 
 
-## I. List of all CoinJoins
+## I. List of all CoinJoins from 2019.6
 
-- [All Wasabi coinjoins](https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/WasabiCoinJoins.txt)
+Note that, 2019.6 is when Samourai Whirlpool became operational, thus the software parses the blockchain only from that time, thus Wasabi CJ list isn't exhaustive.
+
+- [Wasabi coinjoins](https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/WasabiCoinJoins.txt)
 - [All Samourai coinjoins](https://github.com/nopara73/WasabiVsSamourai/blob/master/WasabiVsSamourai/SamouraiCoinJoins.txt)
 
 ## II. Statistics
@@ -70,6 +72,16 @@ Wasabi total mixed volume:                  9304 BTC
 Samourai total mixed volume:                238 BTC
 Wasabi anonset weighted volume mix score:   360360
 Samourai anonset weighted volume mix score: 1190
+
+2019.12
+Wasabi transaction count:                   567
+Samourai transaction count:                 1072
+Wasabi total volume:                        19430 BTC
+Samourai total volume:                      172 BTC
+Wasabi total mixed volume:                  10897 BTC
+Samourai total mixed volume:                172 BTC
+Wasabi anonset weighted volume mix score:   383738
+Samourai anonset weighted volume mix score: 864
 ```
 
 ## Explanation
@@ -77,6 +89,8 @@ Samourai anonset weighted volume mix score: 1190
 ### How accurate are the numbers?
 
 The numbers are accurate. The two wallet's coinjoins can be identified with close to 100% accuracy.
+
+**Update.** As an attempt of trying to disprove myself, [I ran the algorithm for ~2018](https://github.com/nopara73/WasabiVsSamourai/blob/master/2018Stats.md) (from block 500000 to block 552560) and I found zero false positive results.
 
 ###  transaction count
 
